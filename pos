@@ -1,0 +1,17 @@
+#!/bin/bash
+
+#script get lat & lon from GPS for display in conky
+#called by cronjob
+#04FEB2021 KM4ACK
+
+POS=$($HOME/bin/conky/get-pos)
+POSLAT=$(echo $POS | grep -i lat)
+POSLON=$(echo $POS | grep -i lon)
+FILE=/run/user/$UID/posinfo.txt
+
+if [ -z "$GRIDCH" ]
+then
+echo $POS > $FILE
+else
+echo "NO GPS" > $FILE
+fi
