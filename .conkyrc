@@ -1,0 +1,116 @@
+conky.config = {
+	background = true,
+	use_xft = true,
+	font = '123:size=8',
+	xftalpha = 0.5,
+	update_interval = 0.5,
+	total_run_times = 0,
+	own_window = true,
+	own_window_type = 'normal',
+	own_window_transparent = true,
+	own_window_hints = 'undecorated,below,sticky,skip_taskbar,skip_pager',
+	double_buffer = true,
+	minimum_width = 250, minimum_height = 5,
+	maximum_width = 250,
+	draw_shades = false,
+	draw_outline = false,
+	draw_borders = false,
+	draw_graph_borders = false,
+	default_color = 'gray',
+	default_shade_color = 'red',
+	default_outline_color = 'green',
+	alignment = 'top_right',
+	gap_x = 10,
+	gap_y = 10,
+	no_buffers = true,
+	uppercase = false,
+	cpu_avg_samples = 2,
+	net_avg_samples = 1,
+	override_utf8_locale = true,
+	use_spacer = 'right',
+};
+
+conky.text = [[
+
+${font Arial:size=18}${color Yellow}${alignc}KB5WCK
+${voffset -25}
+${font Arial:bold:size=12}${color White}Gridsquare ${alignr}${color Yellow}${execi 60 cat /run/user/1000/gridinfo.txt | cut -c1-8}
+${font Arial:bold:size=12}${color White}Latitude ${alignr}${color Yellow}${execi 60 cat /run/user/1000/posinfo.txt | cut -c6-15}
+${font Arial:bold:size=12}${color White}Longitude ${alignr}${color Yellow}${execi 60 cat /run/user/1000/posinfo.txt | cut -c24-33}
+
+${font Arial:bold:size=14}${color White}Radio Freq ${alignr}${color Yellow}${execi 5 $HOME/bin/conky/get-freq}
+${font Arial:bold:size=12}${color White}VFO A ${if_match "VFOA" == "${execi 5 $HOME/bin/conky/get-vfo}"}*$endif\
+${alignr}${color Yellow}${execi 5 $HOME/bin/conky/get-freq VFOA | cut -c1-7}
+${font Arial:bold:size=12}${color White}VFO B ${if_match "VFOB" == "${execi 5 $HOME/bin/conky/get-vfo}"}*$endif\
+${alignr}${color Yellow}${execi 5 $HOME/bin/conky/get-freq VFOB | cut -c1-7}
+
+${color Yellow}LOCAL${alignr}UTC
+${color DarkSlateGray}${hr 2}
+${font Arial:bold:size=15}${color White}${time %H:%M:%S}\
+${alignr}${tztime UTC %H:%M:%S}
+${font Arial:bold:size=15}${color White}${time %d%b%y}\
+${alignr}${tztime Zulu %d%b%y}
+
+
+${voffset -165}
+
+
+${color grey}
+${font}
+
+${font Arial:bold:size=10}${color Yellow}SYSTEM ${color DarkSlateGray} ${hr 2}
+${font Arial:bold:size=10}${color White}Frequency $alignr${freq_g cpu0}Ghz
+${font Arial:bold:size=10}${color White}Uptime $alignr${uptime}
+#TEMP
+${font Arial:bold:size=10}${color White}Temp: $alignr ${exec /usr/bin/vcgencmd measure_temp | awk -F "[=']" '{print($2 * 1.8)+32}'} F
+${voffset -15}
+${font Arial:bold:size=8}${color White}CPU${alignr}${cpu}%
+${cpubar cpu}
+${font Arial:bold:size=8}${color White}MEM $alignc $mem / $memmax $alignr $memperc%
+$membar
+${font Arial:bold:size=8}${color White}SWAP $alignc $swap / $swapmax $alignr $swapperc%
+$swapbar
+${font Arial:bold:size=8}${color White}HDD $alignc ${fs_used /home} / ${fs_size /home} $alignr ${fs_free_perc /home}%
+${fs_bar /home}
+
+${font Arial:bold:size=10}${color Yellow}SOLAR INFO${color DarkSlateGray} ${hr 2}
+${font Arial:size=10}${color white}SFI: ${color yellow}${execi 180 cat  /home/pi/Scripts/s-flux.txt} $alignr${font Arial:size=10}${color white}A: ${color yellow}${execi 180 cat  /home/pi/Scripts/a-index.txt}
+${font Arial:size=10}${color white}Sunspots: ${color yellow}${execi 180 cat /home/pi/Scripts/sunspots.txt} $alignr ${font Arial:size=10}${color white}K: ${color yellow}${execi 180 cat  /home/pi/Scripts/k-index.txt}
+${font Arial:size=10}${color white}MUF: ${color yellow}${execi 180 cat /home/pi/Scripts/muf.txt} $alignr ${font Arial:size=10}${color white}GeoMag: ${color yellow}${execi 180 cat /home/pi/Scripts/geomag.txt}
+${font Arial:size=10}${color white}Winds: ${color yellow}${execi 180 cat /home/pi/Scripts/s-wind.txt} $alignr${font Arial:size=10}${color white}Noise: ${color yellow}${execi 180 cat /home/pi/Scripts/sig-noise.txt}
+
+${font Arial:bold:size=10}${color yellow}HF BAND CONDITIONS${color DarkSlateGray} ${hr 2}
+${font Arial:size=10}${color white}80m-40m Day: ${if_existing /home/pi/Scripts/band80-40day.txt Good} ${color Green}Good${endif} ${if_existing /home/pi/Scripts/band80-40day.txt Fair}${color Yellow}Fair${endif}${if_existing /home/pi/Scripts/band80-40day.txt Poor}${color Red}Poor${endif}${color white}  ${alignr}Night: ${if_existing /home/pi/Scripts/band80-40night.txt Good}${color Green}Good  ${endif}${if_existing /home/pi/Scripts/band80-40night.txt Fair}${color Yellow}Fair${endif}${if_existing /home/pi/Scripts/band80-40night.txt Poor}${color Red}Poor  ${endif}
+${font Arial:size=10}${color white}30m-20m Day: ${if_existing /home/pi/Scripts/band30-20day.txt Good} ${color Green}Good${endif} ${if_existing /home/pi/Scripts/band30-20day.txt Fair}${color Yellow}Fair${endif}${if_existing /home/pi/Scripts/band30-20day.txt Poor}${color Red}Poor${endif}${color white}  ${alignr}Night: ${if_existing /home/pi/Scripts/band30-20night.txt Good}${color Green}Good  ${endif}${if_existing /home/pi/Scripts/band30-20night.txt Fair}${color Yellow}Fair${endif}${if_existing /home/pi/Scripts/band30-20night.txt Poor}${color Red}Poor  ${endif} 
+${font Arial:size=10}${color white}17m-15m Day: ${if_existing /home/pi/Scripts/band17-15day.txt Good} ${color Green}Good${endif} ${if_existing /home/pi/Scripts/band17-15day.txt Fair}${color Yellow}Fair${endif}${if_existing /home/pi/Scripts/band17-15day.txt Poor}${color Red}Poor${endif}${color white}  ${alignr}Night: ${if_existing /home/pi/Scripts/band17-15night.txt Good}${color Green}Good  ${endif}${if_existing /home/pi/Scripts/band17-15night.txt Fair}${color Yellow}Fair${endif}${if_existing /home/pi/Scripts/band17-15night.txt Poor}${color Red}Poor  ${endif} 
+${font Arial:size=10}${color white}12m-10m Day: ${if_existing /home/pi/Scripts/band12-10day.txt Good} ${color Green}Good${endif} ${if_existing /home/pi/Scripts/band12-10day.txt Fair}${color Yellow}Fair${endif}${if_existing /home/pi/Scripts/band12-10day.txt Poor}${color Red}Poor${endif}${color white}  ${alignr}Night: ${if_existing /home/pi/Scripts/band12-10night.txt Good}${color Green}Good  ${endif}${if_existing /home/pi/Scripts/band12-10night.txt Fair}${color Yellow}Fair${endif}${if_existing /home/pi/Scripts/band12-10night.txt Poor}${color Red}Poor  ${endif}
+
+${font Arial:bold:size=10}${color Yellow}NETWORK/HOTSPOT ${color DarkSlateGray}${hr 2}
+${font Arial:bold:size=10}${color White}SSID: ${alignr}${wireless_essid wlan0}
+${font Arial:bold:size=10}${color White}Wireless IP address $alignr ${addr wlan0}
+${font Arial:bold:size=10}${color White}Wired IP address $alignr ${addr eth0}
+
+${font Arial:bold:size=10}${color Yellow}DHCP ADDRESSES FOR HOTSPOT ${color DarkSlateGray}${hr 2}
+${font Arial:bold:size=10}${color White}${execi 5 cat /var/lib/misc/dnsmasq.leases | awk '{ print $3"   "$4 }'}
+
+${font Arial:bold:size=10}${color Yellow}RADIO TOOLS ${color DarkSlateGray}${hr 2}
+${font Arial:size=08}${if_running piardopc}${color green}ARDOP ACTIVE${else}${color red}ARDOP OFF$endif \
+${alignr}${if_running rigctld}${color green}RIGCTL ACTIVE${else}${color red}RIGCTL OFF$endif
+${if_running kissattach}${color green}KISSATCH ACTIVE${else}${color red}KISSATCH OFF$endif \
+${alignr}${if_running direwolf}${color green}DIREWOLF ACTIVE${else}${color red}DIREWOLF OFF$endif
+
+${font Arial:bold:size=10}${color Yellow}DIGITAL APPS ${color DarkSlateGray}${hr 2}
+${font Arial:size=08}${if_running js8call}${color green}JS8 ACTIVE${else}${color red}JS8 OFF$endif \
+${alignr}${if_running flrig}${color green}FLRIG ACTIVE${else}${color red}FLRIG OFF$endif
+${if_running wsjtx}${color green}WSJT-X ACTIVE${else}${color red}WSJT-X OFF$endif \
+${alignr}${if_running fldigi}${color green}FLDIGI ACTIVE${else}${color red}FLDIGI OFF$endif
+${if_running pavucontrol}${color green}PULSE ACTIVE${else}${color red}PULSE OFF$endif \
+${alignr}${if_running pat}${color green}PAT ACTIVE${else}${color red}PAT OFF$endif
+
+${font Arial:bold:size=10}${color Yellow}RECENT WSJT-X CONTACTS ${color DarkSlateGray}${hr 2}
+#${font Arial:bold:size=08}${color White}${tail ~/Documents/mylog.txt 5}
+#${font Arial:bold:size=08}${color green}${/usr/bin/tail -n 5 ~/.local/share/WSJT-X/wsjtx.log}
+${font Arial:bold:size=10}${color green}${exec tac | /usr/bin/tail -n 5 ~/.local/share/WSJT-X/wsjtx.log | cut -d , -f 1,2,5 | tac}
+
+#$diskio
+]];
